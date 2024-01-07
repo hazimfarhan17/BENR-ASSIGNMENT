@@ -51,22 +51,10 @@
         button:hover {
             background-color: #45a049;
         }
-
-        .register-link {
-            margin-top: 10px;
-            display: block;
-            color: #333;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .register-link:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
-    <form action="/login" method="post">
+    <form action="/register" method="post">
         <h2>Login Form</h2>
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
@@ -74,9 +62,7 @@
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
 
-        <button type="submit">Login</button>
-
-        <a href="/register" class="register-link">Register a new account</a>
+        <button type="submit">Register</button>
     </form>
 </body>
 </html>
