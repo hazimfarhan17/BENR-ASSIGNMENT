@@ -36,10 +36,17 @@ async function run() {
 }
 run().catch(console.dir);
 
-
 app.get('/', (req, res) => {
-res.send('Hello World!')
-})
+    res.sendFile(__dirname + '/login.html')
+    });
+  
+  app.post('/login', (req, res) => {
+    const username = (req.body.username);
+    const password = (req.body.password);
+    res.send("Login Succesfull")
+  });
+
+  
 app.listen(port, () => {
 console.log(`Example app listening on port ${port}`)
 })
