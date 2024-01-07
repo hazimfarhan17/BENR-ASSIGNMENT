@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
-  },
-  "devDependencies": {}
+    "bcryptjs": "^2.4.3",
+    "express": "^4.18.2",
+    "mongo": "^0.1.0"
+  }
 }
