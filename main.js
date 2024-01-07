@@ -98,7 +98,7 @@ app.post('/reg', (req, res) => {
     
     const hash = bcryptjs.hashSync(password, 10);
     console.log(hash);
-    client.db("UtemSystem").collection("users").insertOne({ "username": username, "password": hash })
+    client.db("UtemSystem").collection("User").insertOne({ "username": username, "password": hash,"student_id" : student_id, "name": name, "email": email , "role" : role, "phone": phone, "PA": PA})
   })
   
 
