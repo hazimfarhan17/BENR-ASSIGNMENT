@@ -121,10 +121,13 @@ app.post('/reg', (req, res) => {
         "username": username, 
         "password": hash,
         "student_id" : student_id,
-        "name": name, "email": email,
+        "name": name,
+        "email": email,
         "role" : role,
         "phone": phone,
-        "PA": PA})
+        "PA": PA
+    })
+    res.send('register seccessfully')
   });
 
 app.get('/logout', (req, res) => {
