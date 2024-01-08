@@ -56,9 +56,9 @@ app.post('/login', async (req, res) => {
             if (role === "Student") {
                 res.json({ redirect: '/homepage' });
             } else if (role === "Admin") {
-                res.json({ redirect: '/admin' });
+                res.json({ redirect: '/homepage/admin' });
             } else if (role === "Faculties") {
-                res.json({ redirect: '/Faculties' });
+                res.json({ redirect: '/homepage/Faculties' });
             }
         } else {
             res.json({ error: 'Invalid username or password' });
@@ -68,7 +68,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/Faculties', (req, res) => {
+app.get('/homepage/Faculties', (req, res) => {
     res.sendFile(__dirname + '/Faculties.html')
 });
 
@@ -76,7 +76,7 @@ app.get('/homepage', (req, res) => {
     res.sendFile(__dirname + '/homepage.html')
 });
 
-app.get('/admin', (req, res) => {
+app.get('/homepage/admin', (req, res) => {
     res.sendFile(__dirname + '/admin.html')
 });
 
@@ -109,6 +109,23 @@ app.post('/register', (req, res) => {
     })
   });
 */
+
+app.post('/reg', (req, res) => {
+    const { username, password } = req.body;
+    console.log(username, password);
+    const {student_id, name, email, role, phone, PA } = req.body;
+
+    const hash = bcryptjs.hashSync(password, 10);
+    console.log(hash);
+    client.db("UtemSystem").collection("User").insertOne({ 
+        "username": username, 
+        "password": hash,
+        "student_id" : student_id,
+        "name": name, "email": email,
+        "role" : role,
+        "phone": phone,
+        "PA": PA})
+  });
 
 app.get('/logout', (req, res) => {
     res.redirect('/')
