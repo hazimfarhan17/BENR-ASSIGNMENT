@@ -9,3 +9,29 @@ Your team is required to develop the backend solution for a attendance system. A
 - [ ]  Secure the database system
 - [ ]  Develop the backend server using NodeJs to handle all the relevant RESTful API
 - [ ]  Host the application to the Microsoft Azure Cloud
+
+### Task for each students in our group:
+
+1.Students: (Nawwar)
+- [ ] record attendance 
+- [x] login 
+- [ ]  view details and timeline of attendance 
+- [ ] view report 
+- [x] logout 
+
+2.Academic Administrators: (Hazim)
+- [x] login 
+- [ ]  add student/faculty 
+- [ ] view student list 
+- [x]  logout 
+
+3.Faculty: (Wan Dragon)
+- [x] login 
+- [ ] view details and timeline of attendance 
+- [ ]  view student list 
+- [ ]  view report 
+- [x] logout
+
+
+
+
