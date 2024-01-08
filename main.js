@@ -19,7 +19,6 @@ const client = new MongoClient(uri, {
     }
 });
 
-
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -39,22 +38,46 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/login.html')
 });
+// LOGIN PAGE
+app.post('/login', async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
 
-app.post('/login', (req, res) => {
-    client.db("BENR2423").collection("users").find({
-        "username":{$eq:req.body.username},
-        "password":{$eq:req.body.password}
-    })
-    if (req.body.username == 'admin' && req.body.password == 'admin') {
-        res.redirect('/admin')
+    const user = await client.db("UtemSystem").collection("User").findOne({
+        "username": username,
+    });
+
+    if (user) {
+        const passwordMatch = await bcryptjs.compare(password, user.password);
+
+        if (passwordMatch) {
+            const role = user.role;
+
+            if (role === "Student") {
+                res.json({ redirect: '/homepage' });
+            } else if (role === "Admin") {
+                res.json({ redirect: '/admin' });
+            } else if (role === "Faculties") {
+                res.json({ redirect: '/Faculties' });
+            }
+        } else {
+            res.json({ error: 'Invalid username or password' });
+        }
+    } else {
+        res.json({ error: 'Invalid username or password' });
     }
-    else{
-        res.redirect('/homepage')
-    }
+});
+
+app.get('/Faculties', (req, res) => {
+    res.sendFile(__dirname + '/Faculties.html')
 });
 
 app.get('/homepage', (req, res) => {
     res.sendFile(__dirname + '/homepage.html')
+});
+
+app.get('/admin', (req, res) => {
+    res.sendFile(__dirname + '/admin.html')
 });
 
 
@@ -90,17 +113,6 @@ app.post('/register', (req, res) => {
 app.get('/logout', (req, res) => {
     res.redirect('/')
 });
-
-app.post('/reg', (req, res) => {
-    const { username, password } = req.body;
-    console.log(username, password);
-    const {student_id, name, email, role, phone, PA } = req.body;
-    
-    const hash = bcryptjs.hashSync(password, 10);
-    console.log(hash);
-    client.db("UtemSystem").collection("User").insertOne({ "username": username, "password": hash,"student_id" : student_id, "name": name, "email": email , "role" : role, "phone": phone, "PA": PA})
-  })
-  
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

@@ -52,31 +52,54 @@
             background-color: #45a049;
         }
 
-        .register-link {
+        .error-message {
+            color: #ff3333;
             margin-top: 10px;
-            display: block;
-            color: #333;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .register-link:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <form action="/login" method="post">
+    <form id="loginForm">
         <h2>Login Form</h2>
+        <p id="error-message" class="error-message"></p>
+
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
 
-        <button type="submit">Login</button>
-
-        <a href="/register" class="register-link">Register a new account</a>
+        <button type="button" onclick="submitForm()">Login</button>
     </form>
+
+    <script src="main.js"></script>
+    <script>
+        function submitForm() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('error-message').innerText = data.error;
+                } else {
+                    window.location.href = data.redirect;
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
 </body>
 </html>
