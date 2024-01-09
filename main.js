@@ -65,8 +65,8 @@ function verifyTokenAndRole(requiredRole) {
             } else {
                 res.status(403).json({ error: 'Insufficient privileges' });
             }
-        });
-    };
+        });
+    };
 }
 
 app.get('/', (req, res) => {
@@ -106,15 +106,15 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/Homepage', (req, res) => {
+app.get('/Homepage', verifyTokenAndRole('Student'), (req, res) => {
     res.sendFile(__dirname + '/homepage.html')
 });
 
-app.get('/Faculties', (req, res) => {
+app.get('/Faculties', verifyTokenAndRole('Faculties'), (req, res) => {
     res.sendFile(__dirname + '/Faculties.html')
 });
 
-app.get('/Admin',(req, res) => {
+app.get('/Admin', verifyTokenAndRole('Admin'),(req, res) => {
     res.sendFile(__dirname + '/admin.html')
 });
 
