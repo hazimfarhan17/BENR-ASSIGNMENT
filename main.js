@@ -48,20 +48,23 @@ function generateToken(role) {
 function verifyTokenAndRole(requiredRole) {
     return function (req, res, next) {
         const token = req.headers.authorization (' ')[1];
-
+        console.log('Extracted Token:', token);
         if (!token) {
-            return res.status(401).json({ error: 'Token takde' });
+            return res.status(401).json({ error: 'Invalid Token' });
         }
 
-        jwt.verify(token, 'SecretKey', (err, decoded) => {
+        jwt.verify(token, 'TestKey', (err, decoded) => {
             if (err) {
-                return res.status(403).json({ error: 'salah token' });
+                return res.status(403).json({ error: 'Wrong Token' });
             }
 
             // Check if the user has the required role
             if (decoded.role === requiredRole) {
                 req.user = decoded;
-            } 
+                next();
+            } else {
+                res.status(403).json({ error: 'Insufficient privileges' });
+            }
         });
     };
 }
