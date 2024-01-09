@@ -1,0 +1,32 @@
+{
+    "facultyName": "FKEKK",
+    "programs": {
+        "programsName": "BENR"
+    },
+    "subject": {
+        "subjectName": "database"
+     },
+     "student_id": "B0354321",
+    "email": "fkekk@gmail.com",
+    "phone": "033763123",
+    "session": {
+        "sessionDate": "2021/2022"
+     }
+}
+
+
+{
+    "facultyName": "FKEKK",
+    "programsName": [
+         "programsName"
+     ],
+   "subjectName": [
+        "subjectName"
+    ],
+     "student_id": "B0354321",
+    "email": "fkekk@gmail.com",
+    "phone": "033763123",
+    "session": [
+        "sessionName"
+    ]
+}

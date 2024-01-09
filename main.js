@@ -40,8 +40,8 @@ run().catch(console.dir);
 function generateToken(role) {
     const token = jwt.sign({
         role: role,
-      }, 'TestKey', { expiresIn: '1h' });
-      return token;
+    }, 'TestKey', { expiresIn: '1h' });
+    return token;
 }
 
 //Function to Verify Token
@@ -86,13 +86,13 @@ app.post('/login', async (req, res) => {
             const token = generateToken(role);
 
             if (role === "Student") {
-                res.json({redirect: '/Homepage',token});
+                res.json({ redirect: '/Homepage', token });
                 console.log(token)
             } else if (role === "Admin") {
-                res.json({redirect: '/Admin',token});
+                res.json({ redirect: '/Admin', token });
                 console.log(token)
             } else if (role === "Faculties") {
-                res.json({redirect: '/Faculties',token});
+                res.json({ redirect: '/Faculties', token });
                 console.log(token)
             }
         } else {
@@ -111,7 +111,7 @@ app.get('/Faculties', verifyTokenAndRole('Faculties'), (req, res) => {
     res.sendFile(__dirname + '/Faculties.html')
 });
 
-app.get('/Admin', verifyTokenAndRole('Admin'),(req, res) => {
+app.get('/Admin', verifyTokenAndRole('Admin'), (req, res) => {
     res.sendFile(__dirname + '/admin.html')
 });
 
@@ -120,19 +120,19 @@ app.get('/Admin/RegisterStudent', (req, res) => {
     res.sendFile(__dirname + '/register.html')
 });
 
-app.post('/Admin/RegisterStudent', (req, res) => {
+//ADD STUDENT
+app.post('/Admin/RegisterStudent', verifyTokenAndRole('Admin'), (req, res) => {
     client.db("UtemSystem").collection("User").find({
-        "student_id": { $eq: req.body.student_id }
+        "student_id": { $eq: req.body.student_id },
     }).toArray().then((result) => {
         console.log(result)
         if (result.length > 0) {
             res.status(400).send('ID already exist')
-            //res.json({ error: 'ID already exist' });
+            res.send(result)
             return
         }
         else {
-            const { username, password } = req.body;
-            const { student_id, name, email, role, phone, PA } = req.body;
+            const { username, password, student_id, name, email, role, phone, PA } = req.body;
             console.log(username, password);
 
             const hash = bcryptjs.hashSync(password, 10);
@@ -152,8 +152,60 @@ app.post('/Admin/RegisterStudent', (req, res) => {
     })
 });
 
+//ADD FACULTY
+app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) => {
+    const { facultyName, programs, subject, student_id, email, phone, session } = req.body;
 
+    try {
+        // Check if the student ID exists in the "User" collection
+        const student = await client.db("UtemSystem").collection("User").findOne({
+            "student_id": { $eq: req.body.student_id}
+        });
 
+        if (!student) {
+            res.status(400).send('Student ID not found');
+            console.log(student)
+            return;
+        }
+
+        // Check if the faculty already exists in the "Faculties" collection
+        const facultyExists = await client.db("UtemSystem").collection("Faculties").findOne({
+            "facultyName":{$eq: req.body.facultyName },
+            "student_id": {$eq: req.body.student_id }
+        });
+
+        if (facultyExists) {
+            res.status(400).send('Faculty already exists');
+            return;
+        }
+        if (student_id == true) {
+            res.status(400).send('Student ID already exists');
+            return;
+        }
+        
+        // Insert faculty into the "Faculties" collection
+        await client.db("UtemSystem").collection("Faculties").insertOne({
+            "facultyName": facultyName,
+            programs: {
+                "programsName": programs
+            },
+            subject: {
+                "subjectName": subject
+            },
+            "student_id": student_id,
+            "email": email,
+            "phone": phone,
+            session: {
+                "sessionDate": session
+            }
+        });
+
+        res.send('Registration successful');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 app.get('/logout', (req, res) => {
     res.redirect('/')
