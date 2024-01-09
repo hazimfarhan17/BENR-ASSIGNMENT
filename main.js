@@ -178,7 +178,7 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
             res.status(400).send('Faculty already exists');
             return;
         }
-        if (student_id == true) {
+        if (student_id) {
             res.status(400).send('Student ID already exists');
             return;
         }
