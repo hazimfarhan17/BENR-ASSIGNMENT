@@ -207,7 +207,7 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
     }
 });
 
-// VIEW STUDENT LIST
+// VIEW STUDENT LIST : kena buat aggregate dan sort by faculty
 app.get('/Admin/ViewStudent', (req, res) => {
     client.db("UtemSystem").collection("User").find({
 
