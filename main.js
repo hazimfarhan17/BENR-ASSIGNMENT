@@ -47,11 +47,8 @@ function generateToken(role) {
 //Function to Verify Token
 function verifyTokenAndRole(requiredRole) {
     return function (req, res, next) {
-        const token = req.headers.authorization (' ')[1];
+        const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
         console.log('Extracted Token:', token);
-        if (!token) {
-            return res.status(401).json({ error: 'Invalid Token' });
-        }
 
         jwt.verify(token, 'TestKey', (err, decoded) => {
             if (err) {
@@ -90,13 +87,13 @@ app.post('/login', async (req, res) => {
 
             if (role === "Student") {
                 res.json({redirect: '/Homepage',token});
-                console.log(token) // test
-                console.log(role) //get role
-                console.log(req.headers) //get token from header
+                console.log(token)
             } else if (role === "Admin") {
                 res.json({redirect: '/Admin',token});
+                console.log(token)
             } else if (role === "Faculties") {
                 res.json({redirect: '/Faculties',token});
+                console.log(token)
             }
         } else {
             res.json({ error: 'Invalid username or password' });
