@@ -40,7 +40,8 @@ run().catch(console.dir);
 function generateToken(role) {
     const token = jwt.sign({
         role: role,
-      }, 'TestKey', { expiresIn: '10s' });
+      }, 'TestKey', { expiresIn: '1h' });
+      return token;
 }
 
 //Function to Verify Token
