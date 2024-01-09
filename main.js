@@ -43,6 +43,28 @@ function generateToken(role) {
       }, 'TestKey', { expiresIn: '10s' });
 }
 
+//Function to Verify Token
+function verifyTokenAndRole(requiredRole) {
+    return function (req, res, next) {
+        const token = req.headers.authorization (' ')[1];
+
+        if (!token) {
+            return res.status(401).json({ error: 'Token takde' });
+        }
+
+        jwt.verify(token, 'SecretKey', (err, decoded) => {
+            if (err) {
+                return res.status(403).json({ error: 'salah token' });
+            }
+
+            // Check if the user has the required role
+            if (decoded.role === requiredRole) {
+                req.user = decoded;
+            } 
+        });
+    };
+}
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/login.html')
 });
