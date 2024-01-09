@@ -47,7 +47,6 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/login.html')
 });
 
-// LOGIN PAGE
 app.post('/login', async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -61,13 +60,17 @@ app.post('/login', async (req, res) => {
 
         if (passwordMatch) {
             const role = user.role;
+            const token = generateToken(role);
 
             if (role === "Student") {
-                res.json({redirect: '/Homepage'});
+                res.json({redirect: '/Homepage',token});
+                console.log(token) // test
+                console.log(role) //get role
+                console.log(req.headers) //get token from header
             } else if (role === "Admin") {
-                res.json({redirect: '/Admin'});
+                res.json({redirect: '/Admin',token});
             } else if (role === "Faculties") {
-                res.json({redirect: '/Faculties'});
+                res.json({redirect: '/Faculties',token});
             }
         } else {
             res.json({ error: 'Invalid username or password' });
