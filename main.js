@@ -36,6 +36,12 @@ async function run() {
 }
 run().catch(console.dir);
 
+//Function to Generate Token
+function generateToken(role) {
+    const token = jwt.sign({
+        role: role,
+      }, 'TestKey', { expiresIn: '10s' });
+}
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/login.html')
