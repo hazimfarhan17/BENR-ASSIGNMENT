@@ -21,7 +21,7 @@ Your team is required to develop the backend solution for a attendance system. A
 
 2.Academic Administrators: (Hazim)
 - [x] login 
-- [ ]  add student/faculty 
+- [x]  add student/faculty 
 - [ ] view student list 
 - [x]  logout 
 
