@@ -3,6 +3,7 @@ const app = express()
 const port = process.env.PORT || 3000;
 app.use(express.json())
 const bcryptjs = require('bcryptjs')
+var jwt = require('jsonwebtoken');
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
@@ -35,9 +36,11 @@ async function run() {
 }
 run().catch(console.dir);
 
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/login.html')
 });
+
 // LOGIN PAGE
 app.post('/login', async (req, res) => {
     const username = req.body.username;
@@ -54,11 +57,11 @@ app.post('/login', async (req, res) => {
             const role = user.role;
 
             if (role === "Student") {
-                res.json({ redirect: '/homepage' });
+                res.json({redirect: '/Homepage'});
             } else if (role === "Admin") {
-                res.json({ redirect: '/homepage/admin' });
+                res.json({redirect: '/Admin'});
             } else if (role === "Faculties") {
-                res.json({ redirect: '/homepage/Faculties' });
+                res.json({redirect: '/Faculties'});
             }
         } else {
             res.json({ error: 'Invalid username or password' });
@@ -68,67 +71,57 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/homepage/Faculties', (req, res) => {
-    res.sendFile(__dirname + '/Faculties.html')
-});
-
-app.get('/homepage', (req, res) => {
+app.get('/Homepage', (req, res) => {
     res.sendFile(__dirname + '/homepage.html')
 });
 
-app.get('/homepage/admin', (req, res) => {
+app.get('/Faculties', (req, res) => {
+    res.sendFile(__dirname + '/Faculties.html')
+});
+
+app.get('/Admin',(req, res) => {
     res.sendFile(__dirname + '/admin.html')
 });
 
 
-/*
-app.get('/register', (req, res) => {
+app.get('/Admin/RegisterStudent', (req, res) => {
     res.sendFile(__dirname + '/register.html')
 });
 
-app.post('/register', (req, res) => {
-    client.db("BENR2423").collection("users").find({
-      "username":{$eq:req.body.username}}).toArray().then((result) =>{
+app.post('/Admin/RegisterStudent', (req, res) => {
+    client.db("UtemSystem").collection("User").find({
+        "student_id": { $eq: req.body.student_id }
+    }).toArray().then((result) => {
         console.log(result)
-      if (result.length > 0){
-        res.status(400).send('username already exist')
-        return
-      }
-      else{
-        const { username, password } = req.body;
-        console.log(username, password);
-        const hash = bcryptjs.hashSync(password, 10);
-        console.log(hash);
-        client.db("BENR2423").collection("users").insertOne({
-          "username": username,
-          "password": password,
-          })
-        res.send('register seccessfully')
-        return res.redirect(__dirname + '/home.html')
-      }
-    })
-  });
-*/
+        if (result.length > 0) {
+            res.status(400).send('ID already exist')
+            //res.json({ error: 'ID already exist' });
+            return
+        }
+        else {
+            const { username, password } = req.body;
+            const { student_id, name, email, role, phone, PA } = req.body;
+            console.log(username, password);
 
-app.post('/reg', (req, res) => {
-    const { username, password } = req.body;
-    console.log(username, password);
-    const {student_id, name, email, role, phone, PA } = req.body;
-
-    const hash = bcryptjs.hashSync(password, 10);
-    console.log(hash);
-    client.db("UtemSystem").collection("User").insertOne({ 
-        "username": username, 
-        "password": hash,
-        "student_id" : student_id,
-        "name": name,
-        "email": email,
-        "role" : role,
-        "phone": phone,
-        "PA": PA
+            const hash = bcryptjs.hashSync(password, 10);
+            console.log(hash);
+            client.db("UtemSystem").collection("User").insertOne({
+                "username": username,
+                "password": hash,
+                "student_id": student_id,
+                "name": name,
+                "email": email,
+                "role": role,
+                "phone": phone,
+                "PA": PA
+            })
+            res.send('register seccessfully')
+        }
     })
-    res.send('register seccessfully')
-  });
+});
+
+
+
 
 app.get('/logout', (req, res) => {
     res.redirect('/')
