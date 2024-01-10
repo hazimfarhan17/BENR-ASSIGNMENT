@@ -219,6 +219,46 @@ app.get('/Admin/ViewStudent', (req, res) => {
 });
 
 
+// record attendance by student 
+app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req, res) => {
+    const { student_id, subject, attendance } = req.body;
+
+    try {
+        // Check if the student ID exists in the "User" collection
+        const student = await client.db("UtemSystem").collection("User").findOne({
+            "student_id": { $eq: req.body.student_id }
+        });
+
+        if (!student) {
+            res.status(400).send('Student ID not found');
+            console.log(student)
+            return;
+        }
+
+        // Check if the student already submits attendance in the "Attendance" collection
+        const Attendance = await client.db("UtemSystem").collection("Attendance").findOne({
+            "attendance": { $eq: req.body.attendance}
+        });
+
+        if (Attendance) {
+            res.status(400).send('Already recorded');
+        }
+
+        // Insert Attendance by present or absent or MC with reason into the "Attendance" collection
+        await client.db("UtemSystem").collection("Attendance").insertOne({
+            "student_id": student_id,
+            "subject": subject,
+            "attendance": attendance
+        });
+
+        res.send('Attendance recorded');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
 app.get('/logout', (req, res) => {
     res.redirect('/')
 });
