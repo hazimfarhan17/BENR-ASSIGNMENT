@@ -49,7 +49,7 @@ function generateToken(role,student_id) {
 function verifyTokenAndRole(requiredRole) {
     return function (req, res, next) {
         const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-        //console.log('Extracted Token:', token);
+        console.log('Extracted Token:', token);
 
         jwt.verify(token, 'TestKey', (err, decoded) => {
             if (err) {
@@ -96,8 +96,8 @@ app.post('/login', async (req, res) => {
             } else if (role === "Admin") {
                 res.json({ redirect: '/Admin', token });
                 console.log(token)
-            } else if (role === "Faculties") {
-                res.json({ redirect: '/Faculties', token });
+            } else if (role === "Lecturer") {
+                res.json({ redirect: '/Lecturer', token });
                 console.log(token)
             }
         } else {
@@ -112,14 +112,13 @@ app.get('/Homepage', verifyTokenAndRole('Student'), (req, res) => {
     res.sendFile(__dirname + '/homepage.html')
 });
 
-app.get('/Faculties', verifyTokenAndRole('Faculties'), (req, res) => {
+app.get('/Lecturer', verifyTokenAndRole('Faculties'), (req, res) => {
     res.sendFile(__dirname + '/Faculties.html')
 });
 
 app.get('/Admin', verifyTokenAndRole('Admin'), (req, res) => {
     res.sendFile(__dirname + '/admin.html')
 });
-
 
 app.get('/Admin/RegisterStudent', (req, res) => {
     res.sendFile(__dirname + '/register.html')
@@ -156,6 +155,9 @@ app.post('/Admin/RegisterStudent', verifyTokenAndRole('Admin'), (req, res) => {
         }
     })
 });
+
+// ADD LECTURER
+//CODE HERE
 
 //ADD FACULTY
 app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) => {
@@ -213,7 +215,7 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
 });
 
 
-// VIEW STUDENT LIST : kena buat aggregate dan sort by faculty
+// VIEW STUDENT LIST : kena buat aggregate dan sort by faculty (hazim)
 app.get('/Admin/ViewStudent', verifyTokenAndRole('Admin'), (req, res) => {
     client.db("UtemSystem").collection("User").find({
 
@@ -280,6 +282,10 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req
         console.error(error);
         res.status(500).send('Internal Server Error');
     }
+});
+
+app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req, res) => {
+    const { student_id, subject, attendance } = req.body;
 });
 
 app.get('/logout', (req, res) => {
