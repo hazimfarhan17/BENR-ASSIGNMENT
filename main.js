@@ -263,6 +263,58 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req
     }
 });
 
+// record attendance by student 
+app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student',student_id), async (req, res) => {
+    const { student_id, subject, attendance } = req.body;
+
+    // Valid attendance values
+    const validAttendanceValues = ['present', 'absent'];
+
+    try {
+        // Check if the student ID exists in the "User" collection
+        const student = await client.db("UtemSystem").collection("User").findOne({
+            "student_id": { $eq: req.body.student_id }
+        });
+
+        if (!student) {
+            res.status(400).send('Student ID not found');
+            return;
+        }
+
+        // Check if the student already submits attendance in the "Attendance" collection
+        const existingAttendance = await client.db("UtemSystem").collection("Attendance").findOne({
+            "student_id": { $eq: req.body.student_id },
+            "subject": { $eq: req.body.subject }
+        });
+
+        if (existingAttendance) {
+            res.status(400).send('Attendance already recorded');
+            return;
+        }
+
+        // Validate attendance value
+        if (!validAttendanceValues.includes(attendance)) {
+            res.status(400).send('Invalid attendance value. Accepted values are "present" or "absent".');
+            return;
+        }
+
+        // Get the current timestamp
+        const timestamp = new Date().toLocaleString();;
+
+        // Insert Attendance by present or absent into the "Attendance" collection with timestamp
+        await client.db("UtemSystem").collection("Attendance").insertOne({
+            "student_id": student_id,
+            "subject": subject,
+            "attendance": attendance,
+            "timestamp": timestamp
+        });
+
+        res.send('Attendance recorded');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 app.get('/logout', (req, res) => {
     res.redirect('/')
