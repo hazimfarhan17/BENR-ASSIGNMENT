@@ -225,7 +225,7 @@ app.get('/Admin/ViewStudent', verifyTokenAndRole('Admin'), (req, res) => {
 });
 
 // record attendance by student 
-app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student',student_id), async (req, res) => {
+app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req, res) => {
     const { student_id, subject, attendance } = req.body;
 
     // Valid attendance values
@@ -234,8 +234,13 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student',student_id),
     try {
         // Check if the student ID exists in the "User" collection
         const student = await client.db("UtemSystem").collection("User").findOne({
-            "student_id": { $eq: req.body.student_id }
+            //"student_id": { $eq: req.body.student_id }
         });
+
+        if (req.user.student_id !== student_id) {
+            return res.status(403).json({ error: 'Invalid student ID in the request' });
+            return;
+        }
 
         if (!student) {
             res.status(400).send('Student ID not found');
