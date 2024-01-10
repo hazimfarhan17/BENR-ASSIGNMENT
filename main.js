@@ -37,9 +37,10 @@ async function run() {
 run().catch(console.dir);
 
 //Function to Generate Token
-function generateToken(role) {
+function generateToken(role,student_id) {
     const token = jwt.sign({
         role: role,
+        student_id: student_id
     }, 'TestKey', { expiresIn: '1h' });
     return token;
 }
@@ -48,7 +49,7 @@ function generateToken(role) {
 function verifyTokenAndRole(requiredRole) {
     return function (req, res, next) {
         const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-        console.log('Extracted Token:', token);
+        //console.log('Extracted Token:', token);
 
         jwt.verify(token, 'TestKey', (err, decoded) => {
             if (err) {
@@ -57,14 +58,17 @@ function verifyTokenAndRole(requiredRole) {
 
             // Check if the user has the required role
             if (decoded.role === requiredRole) {
+                // Pass decoded student_id to the route handler
                 req.user = decoded;
+                console.log(decoded);
                 next();
             } else {
                 res.status(403).json({ error: 'Insufficient privileges' });
             }
-        });
-    };
+        });
+    };
 }
+
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/login.html')
