@@ -219,6 +219,7 @@ app.get('/Admin/ViewStudent', (req, res) => {
 });
 
 
+
 // record attendance by student 
 app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req, res) => {
     const { student_id, subject, attendance } = req.body;

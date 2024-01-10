@@ -18,15 +18,15 @@
 {
     "facultyName": "FKEKK",
     "programsName": [
-         "programsName"
+         "BENR"
      ],
    "subjectName": [
-        "subjectName"
+        "DATABASE"
     ],
      "student_id": "B0354321",
     "email": "fkekk@gmail.com",
     "phone": "033763123",
-    "session": [
-        "sessionName"
+    "sessionDate": [
+        "2021/2022"
     ]
 }
