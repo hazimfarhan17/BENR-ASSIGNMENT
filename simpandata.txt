@@ -1,3 +1,5 @@
+
+add faculty (Object list)
 {
     "facultyName": "FKEKK",
     "programs": {
@@ -14,6 +16,7 @@
      }
 }
 
+add faculty (Array)
 
 {
     "facultyName": "FKEKK",
@@ -29,4 +32,11 @@
     "sessionDate": [
         "2021/2022"
     ]
+}
+
+record attendance 
+{
+    "student_id":"B0377895",
+    "subject":"database",
+    "attendance":"present"
 }

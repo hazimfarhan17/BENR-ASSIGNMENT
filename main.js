@@ -87,7 +87,8 @@ app.post('/login', async (req, res) => {
 
         if (passwordMatch) {
             const role = user.role;
-            const token = generateToken(role);
+            const student_id = user.student_id;
+            const token = generateToken(role, student_id);
 
             if (role === "Student") {
                 res.json({ redirect: '/Homepage', token });
@@ -211,8 +212,9 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
     }
 });
 
+
 // VIEW STUDENT LIST : kena buat aggregate dan sort by faculty
-app.get('/Admin/ViewStudent', (req, res) => {
+app.get('/Admin/ViewStudent', verifyTokenAndRole('Admin'), (req, res) => {
     client.db("UtemSystem").collection("User").find({
 
      role: { $eq: "Student" }
@@ -220,47 +222,6 @@ app.get('/Admin/ViewStudent', (req, res) => {
     }).toArray().then((result) => {
         res.send(result)
     })
-});
-
-
-
-// record attendance by student 
-app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req, res) => {
-    const { student_id, subject, attendance } = req.body;
-
-    try {
-        // Check if the student ID exists in the "User" collection
-        const student = await client.db("UtemSystem").collection("User").findOne({
-            "student_id": { $eq: req.body.student_id }
-        });
-
-        if (!student) {
-            res.status(400).send('Student ID not found');
-            console.log(student)
-            return;
-        }
-
-        // Check if the student already submits attendance in the "Attendance" collection
-        const Attendance = await client.db("UtemSystem").collection("Attendance").findOne({
-            "attendance": { $eq: req.body.attendance}
-        });
-
-        if (Attendance) {
-            res.status(400).send('Already recorded');
-        }
-
-        // Insert Attendance by present or absent or MC with reason into the "Attendance" collection
-        await client.db("UtemSystem").collection("Attendance").insertOne({
-            "student_id": student_id,
-            "subject": subject,
-            "attendance": attendance
-        });
-
-        res.send('Attendance recorded');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
 });
 
 // record attendance by student 
