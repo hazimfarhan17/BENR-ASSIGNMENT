@@ -65,8 +65,8 @@ function verifyTokenAndRole(requiredRole) {
             } else {
                 res.status(403).json({ error: 'Insufficient privileges' });
             }
-        });
-    };
+        });
+    };
 }
 
 
