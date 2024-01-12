@@ -37,10 +37,11 @@ async function run() {
 run().catch(console.dir);
 
 //Function to Generate Token
-function generateToken(role,student_id) {
+function generateToken(role,student_id,lecturer_id) {
     const token = jwt.sign({
         role: role,
-        student_id: student_id
+        student_id: student_id,
+        lecturer_id: lecturer_id,
     }, 'TestKey', { expiresIn: '1h' });
     return token;
 }
@@ -88,7 +89,8 @@ app.post('/login', async (req, res) => {
         if (passwordMatch) {
             const role = user.role;
             const student_id = user.student_id;
-            const token = generateToken(role, student_id);
+            const lecturer_id = user.lecturer_id;
+            const token = generateToken(role, student_id,lecturer_id);
 
             if (role === "Student") {
                 res.json({ redirect: '/Homepage', token });
@@ -168,7 +170,7 @@ app.post('/Admin/Lecturer', verifyTokenAndRole('Admin'), (req, res) => {
             return
         }
         else {
-            const { username, password, lecturer_id, name, email, role, phone} = req.body;
+            const { username, password, lecturer_id, name, email, role, phone, TeachingSubject} = req.body;
             console.log(username, password);
 
             const hash = bcryptjs.hashSync(password, 10);
@@ -181,6 +183,7 @@ app.post('/Admin/Lecturer', verifyTokenAndRole('Admin'), (req, res) => {
                 "email": email,
                 "role": role,
                 "phone": phone,
+                "TeachingSubject": TeachingSubject
             })
             res.send('register seccessfully')
         }
@@ -264,7 +267,7 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req
     try {
         // Check if the student ID exists in the "User" collection
         const student = await client.db("UtemSystem").collection("User").findOne({
-            //"student_id": { $eq: req.body.student_id }
+            "student_id": { $eq: req.body.student_id }
         });
 
         if (req.user.student_id !== student_id) {
@@ -326,15 +329,15 @@ app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req
             console.log(SubjectName)
             return;
         }
-
-        // Check if the faculty already exists in the "Faculties" collection
-        const facultyExists = await client.db("UtemSystem").collection("Attendance").find({
-        }).toArray();
-
-        if (facultyExists) {
-            res.send(facultyExists);
+        if (req.user.lecturer_id !== lecturer_id) {
+            return res.status(403).json({ error: 'Invalid lecturer ID in the request' });
             return;
         }
+
+        const facultyExists = await client.db("UtemSystem").collection("Attendance").find({
+        }).toArray();
+        res.send(facultyExists);
+        
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
