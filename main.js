@@ -319,7 +319,7 @@ app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req
     const {subject} = req.body;
 
     try {
-        // Check if the student ID exists in the "User" collection
+        // Check if the Subject exists in the "Attendance" collection
         const SubjectName = await client.db("UtemSystem").collection("Attendance").findOne({
             "subject": { $eq: req.body.subject}
         });
@@ -334,10 +334,11 @@ app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req
             return;
         }
 
-        const facultyExists = await client.db("UtemSystem").collection("Attendance").find({
+        const AttendList = await client.db("UtemSystem").collection("Attendance").find({
+        "subject": { $eq: req.body.subject }
         }).toArray();
-        res.send(facultyExists);
-        
+        res.send(AttendList);
+
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
