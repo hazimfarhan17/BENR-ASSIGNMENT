@@ -318,6 +318,7 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req
 app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req, res) => {
     const { student_id, subject, attendance } = req.body;
     //test
+    //tersr
 });
 
 app.get('/logout', (req, res) => {
