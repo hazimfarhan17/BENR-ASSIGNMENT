@@ -40,3 +40,14 @@ record attendance
     "subject":"database",
     "attendance":"present"
 }
+
+
+
+app.post('/Student/RecordAttendance', (req, res) => {
+    
+});
+
+
+app.post('/Faculty/RecordAttendance', (req, res) => {
+    
+});

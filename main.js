@@ -217,7 +217,7 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
 
 // VIEW STUDENT LIST : kena buat aggregate dan sort by faculty (hazim)
 app.get('/Admin/ViewStudent', verifyTokenAndRole('Admin'), (req, res) => {
-    client.db("UtemSystem").collection("User").find({
+    client.db("UtemSystem").collection("User").find({  
 
      role: { $eq: "Student" }
 
