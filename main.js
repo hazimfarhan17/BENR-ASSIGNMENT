@@ -157,7 +157,6 @@ app.post('/Admin/RegisterStudent', verifyTokenAndRole('Admin'), (req, res) => {
 });
 
 // ADD LECTURER
-//ADD STUDENT
 app.post('/Admin/Lecturer', verifyTokenAndRole('Admin'), (req, res) => {
     client.db("UtemSystem").collection("User").find({
         "lecturer_id": { $eq: req.body.lecturer_id },
@@ -169,7 +168,7 @@ app.post('/Admin/Lecturer', verifyTokenAndRole('Admin'), (req, res) => {
             return
         }
         else {
-            const { username, password, student_id, name, email, role, phone, PA } = req.body;
+            const { username, password, lecturer_id, name, email, role, phone} = req.body;
             console.log(username, password);
 
             const hash = bcryptjs.hashSync(password, 10);
@@ -177,18 +176,16 @@ app.post('/Admin/Lecturer', verifyTokenAndRole('Admin'), (req, res) => {
             client.db("UtemSystem").collection("User").insertOne({
                 "username": username,
                 "password": hash,
-                "student_id": student_id,
+                "lecturer_id": lecturer_id,
                 "name": name,
                 "email": email,
                 "role": role,
                 "phone": phone,
-                "PA": PA
             })
             res.send('register seccessfully')
         }
     })
 });
-//CODE HERE
 
 //ADD FACULTY
 app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) => {
