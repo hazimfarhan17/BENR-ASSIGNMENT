@@ -313,8 +313,33 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req
 });
 
 app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req, res) => {
-    const { student_id, subject, attendance } = req.body;
-    //helllo00
+    const {subject} = req.body;
+
+    try {
+        // Check if the student ID exists in the "User" collection
+        const SubjectName = await client.db("UtemSystem").collection("Attendance").findOne({
+            "subject": { $eq: req.body.subject}
+        });
+
+        if (!SubjectName) {
+            res.status(400).send('Subject not found');
+            console.log(SubjectName)
+            return;
+        }
+
+        // Check if the faculty already exists in the "Faculties" collection
+        const facultyExists = await client.db("UtemSystem").collection("Attendance").find({
+        }).toArray();
+
+        if (facultyExists) {
+            res.send(facultyExists);
+            return;
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+
 });
 
 app.get('/logout', (req, res) => {
