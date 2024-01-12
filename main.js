@@ -157,6 +157,37 @@ app.post('/Admin/RegisterStudent', verifyTokenAndRole('Admin'), (req, res) => {
 });
 
 // ADD LECTURER
+//ADD STUDENT
+app.post('/Admin/Lecturer', verifyTokenAndRole('Admin'), (req, res) => {
+    client.db("UtemSystem").collection("User").find({
+        "lecturer_id": { $eq: req.body.lecturer_id },
+    }).toArray().then((result) => {
+        console.log(result)
+        if (result.length > 0) {
+            res.status(400).send('ID already exist')
+            res.send(result)
+            return
+        }
+        else {
+            const { username, password, student_id, name, email, role, phone, PA } = req.body;
+            console.log(username, password);
+
+            const hash = bcryptjs.hashSync(password, 10);
+            console.log(hash);
+            client.db("UtemSystem").collection("User").insertOne({
+                "username": username,
+                "password": hash,
+                "student_id": student_id,
+                "name": name,
+                "email": email,
+                "role": role,
+                "phone": phone,
+                "PA": PA
+            })
+            res.send('register seccessfully')
+        }
+    })
+});
 //CODE HERE
 
 //ADD FACULTY

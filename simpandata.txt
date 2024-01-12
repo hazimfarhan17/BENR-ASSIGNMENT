@@ -46,7 +46,7 @@ record attendance
 app.post('/Student/RecordAttendance', (req, res) => {
     
 });
-
+ 
 
 app.post('/Faculty/RecordAttendance', (req, res) => {
     
