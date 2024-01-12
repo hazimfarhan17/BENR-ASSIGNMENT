@@ -25,9 +25,9 @@ Your team is required to develop the backend solution for a attendance system. A
 - [x] view student list 
 - [x]  logout 
 
-3.Faculty: (Wan Dragon)
+3.Faculty(Lecturer): (Wan Dragon)
 - [x] login 
-- [ ] view details and timeline of attendance 
+- [x] view details and timeline of attendance 
 - [ ]  view student list 
 - [ ]  view report 
 - [x] logout
