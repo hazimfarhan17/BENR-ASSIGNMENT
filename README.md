@@ -22,7 +22,7 @@ Your team is required to develop the backend solution for a attendance system. A
 2.Academic Administrators: (Hazim)
 - [x] login 
 - [x]  add student/faculty 
-- [ ] view student list 
+- [x] view student list 
 - [x]  logout 
 
 3.Faculty: (Wan Dragon)
