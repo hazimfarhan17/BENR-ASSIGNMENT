@@ -1,4 +1,6 @@
 
+for postman
+
 add faculty (Object list)
 {
     "facultyName": "FKEKK",
@@ -41,7 +43,16 @@ record attendance
     "attendance":"present"
 }
 
-
+{
+    "username": username,
+    "password": hash,
+    "student_id": student_id,
+    "name": name,
+    "email": email,
+    "role": role,
+    "phone": phone,
+    "PA": PA 
+}
 
 app.post('/Student/RecordAttendance', (req, res) => {
     

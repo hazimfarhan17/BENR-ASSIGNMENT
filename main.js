@@ -230,7 +230,9 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
             subject: {
                 "subjectName": subject
             },
-            "student_id": student_id,
+            "studentList_id": [
+                 studentList_id
+            ],
             "email": email,
             "phone": phone,
             session: {
