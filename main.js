@@ -37,7 +37,7 @@ async function run() {
 run().catch(console.dir);
 
 //Function to Generate Token
-function generateToken(role,student_id,lecturer_id) {
+function generateToken(role, student_id, lecturer_id) {
     const token = jwt.sign({
         role: role,
         student_id: student_id,
@@ -90,7 +90,7 @@ app.post('/login', async (req, res) => {
             const role = user.role;
             const student_id = user.student_id;
             const lecturer_id = user.lecturer_id;
-            const token = generateToken(role, student_id,lecturer_id);
+            const token = generateToken(role, student_id, lecturer_id);
 
             if (role === "Student") {
                 res.json({ redirect: '/Homepage', token });
@@ -170,7 +170,7 @@ app.post('/Admin/Lecturer', verifyTokenAndRole('Admin'), (req, res) => {
             return
         }
         else {
-            const { username, password, lecturer_id, name, email, role, phone, TeachingSubject} = req.body;
+            const { username, password, lecturer_id, name, email, role, phone, TeachingSubject } = req.body;
             console.log(username, password);
 
             const hash = bcryptjs.hashSync(password, 10);
@@ -197,7 +197,7 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
     try {
         // Check if the student ID exists in the "User" collection
         const student = await client.db("UtemSystem").collection("User").findOne({
-            "student_id": { $eq: req.body.student_id}
+            "student_id": { $eq: req.body.student_id }
         });
 
         if (!student) {
@@ -208,8 +208,8 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
 
         // Check if the faculty already exists in the "Faculties" collection
         const facultyExists = await client.db("UtemSystem").collection("Faculties").findOne({
-            "facultyName":{$eq: req.body.facultyName },
-            "student_id": {$eq: req.body.student_id }
+            "facultyName": { $eq: req.body.facultyName },
+            "student_id": { $eq: req.body.student_id }
         });
 
         if (facultyExists) {
@@ -220,7 +220,7 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
             res.status(400).send('Student ID already exists');
             return;
         }
-        
+
         // Insert faculty into the "Faculties" collection
         await client.db("UtemSystem").collection("Faculties").insertOne({
             "facultyName": facultyName,
@@ -231,7 +231,7 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
                 "subjectName": subject
             },
             "studentList_id": [
-                 studentList_id
+                studentList_id
             ],
             "email": email,
             "phone": phone,
@@ -250,9 +250,9 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
 
 // VIEW STUDENT LIST : kena buat aggregate dan sort by faculty (hazim)
 app.get('/Admin/ViewStudent', verifyTokenAndRole('Admin'), (req, res) => {
-    client.db("UtemSystem").collection("User").find({  
+    client.db("UtemSystem").collection("User").find({
 
-     role: { $eq: "Student" }
+        role: { $eq: "Student" }
 
     }).toArray().then((result) => {
         res.send(result)
@@ -318,12 +318,12 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req
 });
 
 app.post('/Lecturer/ViewRecordAttendance', verifyTokenAndRole('Lecturer'), async (req, res) => {
-    const {subject} = req.body;
+    const { subject } = req.body;
 
     try {
         // Check if the Subject exists in the "Attendance" collection
         const SubjectName = await client.db("UtemSystem").collection("Attendance").findOne({
-            "subject": { $eq: req.body.subject}
+            "subject": { $eq: req.body.subject }
         });
 
         if (!SubjectName) {
@@ -337,7 +337,7 @@ app.post('/Lecturer/ViewRecordAttendance', verifyTokenAndRole('Lecturer'), async
         }
 
         const AttendList = await client.db("UtemSystem").collection("Attendance").find({
-        "subject": { $eq: req.body.subject }
+            "subject": { $eq: req.body.subject }
         }).toArray();
         res.send(AttendList);
 
@@ -349,12 +349,12 @@ app.post('/Lecturer/ViewRecordAttendance', verifyTokenAndRole('Lecturer'), async
 });
 
 app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req, res) => {
-    const {subject} = req.body;
+    const { subject } = req.body;
 
     try {
         // 
         const Subject = await client.db("UtemSystem").collection("Faculties").findOne({
-            "subject": { $eq: req.body.subject}
+            "subject": { $eq: req.body.subject }
         }).toArray();
 
         if (!Subject) {
@@ -368,14 +368,23 @@ app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req
         }
 
         const List = await client.db("UtemSystem").collection("Faculties").find({
-        "studentList_id": studentList_id 
+            "studentList_id": studentList_id
         }).toArray();
         res.send(List);
 
         const name = await client.db("UtemSystem").collection("User").find({
-        "name": name 
+            "stundet_id": student_id
         }).toArray();
-        res.send(name);
+
+        if (List = studentList_id) {
+            res.send(name)
+            return;
+        }
+        else{
+            res.status(400).send('Student not found');
+            console.log(SubjectName)
+            return;
+        }
 
     } catch (error) {
         console.error(error);
