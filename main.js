@@ -393,6 +393,37 @@ app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req
 
 });
 
+app.post('/Homepage/ViewRecordAttendance', verifyTokenAndRole('Student'), async (req, res) => {
+    const { student_id } = req.body;
+
+    try {
+        // Check if the ID exists in the "Attendance" collection
+        const Student = await client.db("UtemSystem").collection("Attendance").findOne({
+            "student_id": { $eq: req.body.student_id }
+        });
+
+        if (!student_id) {
+            res.status(400).send('ID not found');
+            console.log(SubjectName)
+            return;
+        }
+        if (req.user.student_id !== student_id) {
+            return res.status(403).json({ error: 'Invalid student ID in the request' });
+            return;
+        }
+
+        const AttendList = await client.db("UtemSystem").collection("Attendance").find({
+            "subject": { $eq: req.body.subject }
+        }).toArray();
+        res.send(AttendList);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+
+});
+
 app.get('/logout', (req, res) => {
     res.redirect('/')
 });
