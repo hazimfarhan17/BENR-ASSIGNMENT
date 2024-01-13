@@ -317,7 +317,7 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req
     }
 });
 
-app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req, res) => {
+app.post('/Lecturer/ViewRecordAttendance', verifyTokenAndRole('Lecturer'), async (req, res) => {
     const {subject} = req.body;
 
     try {
@@ -340,6 +340,42 @@ app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req
         "subject": { $eq: req.body.subject }
         }).toArray();
         res.send(AttendList);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+
+});
+
+app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req, res) => {
+    const {subject} = req.body;
+
+    try {
+        // 
+        const Subject = await client.db("UtemSystem").collection("Faculties").findOne({
+            "subject": { $eq: req.body.subject}
+        }).toArray();
+
+        if (!Subject) {
+            res.status(400).send('Student not found');
+            console.log(SubjectName)
+            return;
+        }
+        if (req.user.lecturer_id !== lecturer_id) {
+            return res.status(403).json({ error: 'Invalid lecturer ID in the request' });
+            return;
+        }
+
+        const List = await client.db("UtemSystem").collection("Faculties").find({
+        "studentList_id": studentList_id 
+        }).toArray();
+        res.send(List);
+
+        const name = await client.db("UtemSystem").collection("User").find({
+        "name": name 
+        }).toArray();
+        res.send(name);
 
     } catch (error) {
         console.error(error);

@@ -53,12 +53,3 @@ record attendance
     "phone": phone,
     "PA": PA 
 }
-
-app.post('/Student/RecordAttendance', (req, res) => {
-    
-});
- 
-
-app.post('/Faculty/RecordAttendance', (req, res) => {
-    
-});
