@@ -15,8 +15,7 @@ Your team is required to develop the backend solution for a attendance system. A
 1.Students: (Nawwar)
 - [x] record attendance 
 - [x] login 
-- [ ]  view details and timeline of attendance 
-- [ ] view report 
+- [ ]  view details and timeline of attendance  
 - [x] logout 
 
 2.Academic Administrators: (Hazim)
@@ -28,8 +27,7 @@ Your team is required to develop the backend solution for a attendance system. A
 3.Faculty(Lecturer): (Wan Dragon)
 - [x] login 
 - [x] view details and timeline of attendance 
-- [ ]  view student list 
-- [ ]  view report 
+- [x]  view student list  
 - [x] logout
 
 
