@@ -13,7 +13,7 @@ Your team is required to develop the backend solution for a attendance system. A
 ### Task for each students in our group:
 
 1.Students: (Nawwar)
-- [ ] record attendance 
+- [x] record attendance 
 - [x] login 
 - [ ]  view details and timeline of attendance 
 - [ ] view report 
