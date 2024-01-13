@@ -61,7 +61,7 @@ function verifyTokenAndRole(requiredRole) {
             if (decoded.role === requiredRole) {
                 // Pass decoded student_id to the route handler
                 req.user = decoded;
-                console.log(decoded);
+                //console.log(decoded);
                 next();
             } else {
                 res.status(403).json({ error: 'Insufficient privileges' });
@@ -413,6 +413,7 @@ app.post('/Homepage/ViewRecordAttendance', verifyTokenAndRole('Student'), async 
         }
 
         const AttendList = await client.db("UtemSystem").collection("Attendance").find({
+            "student_id": req.user.student_id,
             "subject": { $eq: req.body.subject }
         }).toArray();
         res.send(AttendList);
