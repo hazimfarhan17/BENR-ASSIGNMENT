@@ -159,7 +159,7 @@ app.post('/Admin/RegisterStudent', verifyTokenAndRole('Admin'), (req, res) => {
 });
 
 // ADD LECTURER
-app.post('/Admin/Lecturer', verifyTokenAndRole('Admin'), (req, res) => {
+app.post('/Admin/AddLecturer', verifyTokenAndRole('Admin'), (req, res) => {
     client.db("UtemSystem").collection("User").find({
         "lecturer_id": { $eq: req.body.lecturer_id },
     }).toArray().then((result) => {
@@ -192,7 +192,7 @@ app.post('/Admin/Lecturer', verifyTokenAndRole('Admin'), (req, res) => {
 
 //ADD FACULTY
 app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) => {
-    const { facultyName, programs, subject, student_id, email, phone, session } = req.body;
+    const { facultyName, programs, subject, student_id, studentList_id, email, phone, session } = req.body;
 
     try {
         // Check if the student ID exists in the "User" collection
