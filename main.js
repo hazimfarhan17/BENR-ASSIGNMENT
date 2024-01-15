@@ -192,20 +192,9 @@ app.post('/Admin/AddLecturer', verifyTokenAndRole('Admin'), (req, res) => {
 
 //ADD FACULTY
 app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) => {
-    const { facultyName, ProgramsName, SubjectName, studentList_id,student_id, email, phone, session } = req.body;
+    const { facultyName, ProgramsName, SubjectName, studentList_id, email, phone, session } = req.body;
 
     try {
-        // Check if the student ID exists in the "User" collection
-        const student = await client.db("UtemSystem").collection("User").findOne({
-            "student_id": { $eq: req.body.student_id }
-        });
-
-        if (!student) {
-            res.status(400).send('Student ID not found');
-            console.log(student)
-            return;
-        }
-
         // Check if the faculty already exists in the "Faculties" collection
         const facultyExists = await client.db("UtemSystem").collection("Faculties").findOne({
             "facultyName": { $eq: req.body.facultyName },
@@ -216,7 +205,7 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
             res.status(400).send('Faculty already exists');
             return;
         }
-        if (student_id) {
+        if (studentList_id) {
             res.status(400).send('Student ID already exists');
             return;
         }
