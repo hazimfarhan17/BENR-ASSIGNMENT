@@ -393,13 +393,36 @@ app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req
 
 });
 
-app.patch('/Lecturer/UpdateStudent', verifyTokenAndRole('Lecturer'),async(req,res) => {
-    const { student_id } = req.body;
+app.patch('/Lecturer/UpdateStudent', verifyTokenAndRole('Lecturer'), async (req, res) => {
+    const { facultyName, studentList_id } = req.body;
 
+    try {
+        // Check if the Faculty exists in the "Faculties" collection
+        const faculty = await client.db("UtemSystem").collection("Faculties").findOne({
+            "FacultyName": { $eq: facultyName }
+        });
 
+        if (!faculty) {
+            return res.status(400).send('Faculty not Exist');
+        }
 
+        if (req.user.lecturer_id !== req.body.lecturer_id) {
+            return res.status(403).json({ error: 'Invalid Lecturer ID in the request' });
+        }
 
-})
+        const updatedResult = await client.db("UtemSystem").collection("Attendance").updateMany(
+            { "facultyName": facultyName },
+            { $set: { "studentList_id": [studentList_id] } }
+        );
+
+        res.send(updatedResult);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 
 app.post('/Homepage/ViewRecordAttendance', verifyTokenAndRole('Student'), async (req, res) => {
     const { student_id } = req.body;
