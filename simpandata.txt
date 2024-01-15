@@ -1,37 +1,26 @@
 
 for postman
 
-add faculty (Object list)
-{
-    "facultyName": "FKEKK",
-    "programs": {
-        "programsName": "BENR"
-    },
-    "subject": {
-        "subjectName": "database"
-     },
-     "student_id": "B0354321",
-    "email": "fkekk@gmail.com",
-    "phone": "033763123",
-    "session": {
-        "sessionDate": "2021/2022"
-     }
-}
-
 add faculty (Array)
 
 {
-    "facultyName": "FKEKK",
-    "programsName": [
-         "BENR"
-     ],
-   "subjectName": [
-        "DATABASE"
+    "facultyName": "FKE",
+    "ProgramsName": [
+        "BENR",
+        "BENG"
+
     ],
-     "student_id": "B0354321",
+    "SubjectName": [
+        "Data-Structure",
+        "Digital-System"
+    ],
+     "studentList_id": [
+        "B0354231",
+        "B0377895"
+     ],
     "email": "fkekk@gmail.com",
     "phone": "033763123",
-    "sessionDate": [
+    "session":[
         "2021/2022"
     ]
 }
@@ -39,7 +28,7 @@ add faculty (Array)
 record attendance 
 {
     "student_id":"B0377895",
-    "subject":"database",
+    "SubjectName":["Database"],
     "attendance":"present"
 }
 

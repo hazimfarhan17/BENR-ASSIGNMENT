@@ -50,7 +50,7 @@ function generateToken(role, student_id, lecturer_id) {
 function verifyTokenAndRole(requiredRole) {
     return function (req, res, next) {
         const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-        console.log('Extracted Token:', token);
+        //console.log('Extracted Token:', token);
 
         jwt.verify(token, 'TestKey', (err, decoded) => {
             if (err) {
@@ -242,12 +242,22 @@ app.get('/Admin/ViewStudent', verifyTokenAndRole('Admin'), (req, res) => {
 
 // record attendance by student // add on if subject available in faculties !!!
 app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req, res) => {
-    const { student_id, subject, attendance } = req.body;
+    const { student_id, SubjectName, attendance } = req.body;
 
     // Valid attendance values
     const validAttendanceValues = ['present', 'absent'];
 
     try {
+        // Check if the SubjectName exist in faculties collections
+        const Subject = await client.db("UtemSystem").collection("Faculties").findOne({
+            "SubjectName": { $in: req.body.SubjectName }
+        });
+
+        if (!Subject) {
+            res.status(400).send('Subject is Not Enlisted');
+            return;
+        }
+
         // Check if the student ID exists in the "User" collection
         const student = await client.db("UtemSystem").collection("User").findOne({
             "student_id": { $eq: req.body.student_id }
@@ -266,7 +276,7 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req
         // Check if the student already submits attendance in the "Attendance" collection
         const existingAttendance = await client.db("UtemSystem").collection("Attendance").findOne({
             "student_id": { $eq: req.body.student_id },
-            "subject": { $eq: req.body.subject }
+            "SubjectName": { $eq: req.body.SubjectName}
         });
 
         if (existingAttendance) {
@@ -286,7 +296,7 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req
         // Insert Attendance by present or absent into the "Attendance" collection with timestamp
         await client.db("UtemSystem").collection("Attendance").insertOne({
             "student_id": student_id,
-            "subject": subject,
+            "SubjectName": SubjectName,
             "attendance": attendance,
             "timestamp": timestamp
         });
