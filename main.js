@@ -393,6 +393,14 @@ app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req
 
 });
 
+app.patch('/Lecturer/UpdateStudent', verifyTokenAndRole('Lecturer'),async(req,res) => {
+    const { student_id } = req.body;
+
+
+
+
+})
+
 app.post('/Homepage/ViewRecordAttendance', verifyTokenAndRole('Student'), async (req, res) => {
     const { student_id } = req.body;
 
