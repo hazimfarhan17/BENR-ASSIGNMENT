@@ -55,7 +55,7 @@ record attendance // student
     "attendance":"present"
 }
 
-View Record Attendance // lecturer boleh buat guna method GET
+View Record Attendance // lecturer boleh buat guna method GET role teaching SUBJECT
 {
     "SubjectName":["Data-Structure"]
 }
