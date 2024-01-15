@@ -1,8 +1,31 @@
 
 for postman
 
-add faculty (Array)
+add student // admin
+{
+    "username": username,
+    "password": hash,
+    "student_id": student_id,
+    "name": name,
+    "email": email,
+    "role": role,
+    "phone": phone,
+    "PA": PA 
+}
 
+add lecturer //admin
+{
+    "username": nawwar00,
+    "password": hash,
+    "student_id": L002,
+    "name": Nawwar Nurnaim,
+    "email": nawwar00@example.com,
+    "role": Lecturer,
+    "phone": 016-9577908,
+    "TeachingSubject": Data-Structure
+}
+
+add faculty (Array) // admin
 {
     "facultyName": "FKE",
     "ProgramsName": [
@@ -25,20 +48,14 @@ add faculty (Array)
     ]
 }
 
-record attendance 
+record attendance // student
 {
     "student_id":"B0377895",
     "SubjectName":["Database"],
     "attendance":"present"
 }
 
+View Record Attendance // lecturer boleh buat guna method GET
 {
-    "username": username,
-    "password": hash,
-    "student_id": student_id,
-    "name": name,
-    "email": email,
-    "role": role,
-    "phone": phone,
-    "PA": PA 
+    "SubjectName":["Data-Structure"]
 }

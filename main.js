@@ -314,7 +314,7 @@ app.post('/Lecturer/ViewRecordAttendance', verifyTokenAndRole('Lecturer'), async
     try {
         // Check if the Subject exists in the "Attendance" collection
         const SubjectName = await client.db("UtemSystem").collection("Attendance").findOne({
-            "subject": { $eq: req.body.subject }
+            "SubjectName": { $in: req.body.SubjectName }
         });
 
         if (!SubjectName) {
@@ -328,7 +328,7 @@ app.post('/Lecturer/ViewRecordAttendance', verifyTokenAndRole('Lecturer'), async
         }
 
         const AttendList = await client.db("UtemSystem").collection("Attendance").find({
-            "subject": { $eq: req.body.subject }
+            "SubjectName": { $in: req.body.SubjectName }
         }).toArray();
         res.send(AttendList);
 
@@ -340,16 +340,16 @@ app.post('/Lecturer/ViewRecordAttendance', verifyTokenAndRole('Lecturer'), async
 });
 
 app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req, res) => {
-    const { subject } = req.body;
+    const { SubjectName } = req.body;
 
     try {
         // 
         const Subject = await client.db("UtemSystem").collection("Faculties").findOne({
-            "subject": { $eq: req.body.subject }
+            "SubjectName": { $in: req.body.SubjectName }
         }).toArray();
 
         if (!Subject) {
-            res.status(400).send('Student not found');
+            res.status(400).send('Subject not found');
             console.log(SubjectName)
             return;
         }
@@ -359,13 +359,11 @@ app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req
         }
 
         const List = await client.db("UtemSystem").collection("Faculties").find({
-            "studentList_id": studentList_id
+            "studentList_id": { $in: req.body.studentList_id }
         }).toArray();
         res.send(List);
 
-        const name = await client.db("UtemSystem").collection("User").find({
-            "stundet_id": student_id
-        }).toArray();
+        const name = await client.db("UtemSystem").collection("User").find().toArray();
 
         if (List = studentList_id) {
             res.send(name)
@@ -426,7 +424,7 @@ app.post('/Homepage/ViewRecordAttendance', verifyTokenAndRole('Student'), async 
 
         if (!student_id) {
             res.status(400).send('ID not found');
-            console.log(SubjectName)
+            console.log(Student)
             return;
         }
         if (req.user.student_id !== student_id) {
@@ -436,7 +434,7 @@ app.post('/Homepage/ViewRecordAttendance', verifyTokenAndRole('Student'), async 
 
         const AttendList = await client.db("UtemSystem").collection("Attendance").find({
             "student_id": req.user.student_id,
-            "subject": { $eq: req.body.subject }
+            "SubjectName": { $in: req.body.SubjectName }
         }).toArray();
         res.send(AttendList);
 
