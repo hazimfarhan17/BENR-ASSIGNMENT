@@ -411,6 +411,7 @@ app.post('/Lecturer/AddSubject', verifyTokenAndRole('Lecturer'), async (req, res
         // Check if the Subject exists in the "Programs" collection
         const SubInfo = await client.db("UtemSystem").collection("Programs").findOne({
             "ProgramsName": ProgramsName,
+            "SubjectName": SubjectName,
         });
 
         if (!SubInfo) {
