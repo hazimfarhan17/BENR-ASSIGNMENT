@@ -192,13 +192,13 @@ app.post('/Admin/AddLecturer', verifyTokenAndRole('Admin'), (req, res) => {
 
 //ADD FACULTY
 app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) => {
-    const { facultyName, ProgramsName, SubjectListed, studentList_id, email, phone, session } = req.body;
+    const { facultyName, ProgramsName, SubjectListed, studentList_id, email, phone} = req.body;
 
     try {
         // Check if the faculty already exists in the "Faculties" collection
         const facultyExists = await client.db("UtemSystem").collection("Faculties").findOne({
             "facultyName": { $eq: req.body.facultyName },
-            "studentList_id": studentList_id 
+            "studentList_id": studentList_id
         });
 
         if (facultyExists) {
@@ -213,12 +213,11 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
         // Insert faculty into the "Faculties" collection
         await client.db("UtemSystem").collection("Faculties").insertOne({
             "facultyName": facultyName,
-           ProgramsName: ProgramsName,
+            ProgramsName: ProgramsName,
             SubjectListed: SubjectListed,
             studentList_id: studentList_id,
             "email": email,
             "phone": phone,
-            session : session,
         });
 
         res.send('Registration successful');
@@ -227,8 +226,69 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
         res.status(500).send('Internal Server Error');
     }
 });
+//ADMIN ADD PROGRAMS NOT DONE
+app.post('/Admin/AddPrograms', verifyTokenAndRole('Admin'), async (req, res) => {
+    const {ProgramsName,SubjectName } = req.body;
+    try {
 
+        // Check if the Programs exists in the "Programs" collection
+        const Prog = await client.db("UtemSystem").collection("Programs").findOne({
+            "ProgramsName": ProgramsName
+        });
 
+        if (Prog) {
+            res.status(400).send('Programs Already Exist');
+            console.log(ProgramsName);
+            return;
+        }
+
+        // Check if the Subjects exists in the "Programs" collection
+        const Sub = await client.db("UtemSystem").collection("Programs").findOne({
+            "SubjectName": SubjectName
+        });
+
+        if (Sub) {
+            res.status(400).send('Subject Already Enlisted in another programs');
+            console.log(ProgramsName);
+            return;
+        }
+
+        // Check if the Programs exists in the "Faculties" collection
+        const ProgInfo = await client.db("UtemSystem").collection("Faculties").findOne({
+            "ProgramsName": ProgramsName,
+        });
+
+        if (!ProgInfo) {
+            res.status(400).send('Programs Not Enlisted By This Faculty');
+            console.log(ProgramsName);
+            return;
+        }
+
+        // Check if the Subject exists in the "Faculties" collection
+        const SubjectInfo = await client.db("UtemSystem").collection("Faculties").findOne({
+            "SubjectName": SubjectName,
+        });
+
+        if (!SubjectInfo) {
+            res.status(400).send('Subject Not Enlisted By This Faculty');
+            console.log(SubjectName);
+            return;
+        }
+
+        // Insert data into the "Programs" collection
+        await client.db("UtemSystem").collection("Programs").insertOne({
+            "facultyName": ProgInfo.facultyName,
+            "ProgramsName": ProgramsName,
+            "SubjectName": SubjectName
+        });
+
+        res.status(200).send('Programs added successfully');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+/////////////////////////////////////////////////////////////////////////////////////////////////
 // VIEW STUDENT LIST : kena buat aggregate dan sort by faculty (hazim)
 app.get('/Admin/ViewStudent', verifyTokenAndRole('Admin'), (req, res) => {
     client.db("UtemSystem").collection("User").find({
@@ -240,7 +300,7 @@ app.get('/Admin/ViewStudent', verifyTokenAndRole('Admin'), (req, res) => {
     })
 });
 
-// record attendance by student // add on if subject available in faculties !!!
+// record attendance by student // DONE /////////////////////////////////////////////////////////////////
 app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req, res) => {
     const { student_id, SubjectName, attendance } = req.body;
 
@@ -248,9 +308,21 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req
     const validAttendanceValues = ['present', 'absent'];
 
     try {
+
+        // Check if the Student Enlisted in class in the "Subjects" collection
+        const Enlisted = await client.db("UtemSystem").collection("Subjects").findOne({
+            "student_id": { $eq: req.body.student_id }
+        });
+
+        if (!Enlisted) {
+            res.status(400).send('You Are Not Enlisted to this Subject');
+            return;
+        }
+
+
         // Check if the SubjectName exist in faculties collections
-        const Subject = await client.db("UtemSystem").collection("Faculties").findOne({
-            "SubjectName": { $in: req.body.SubjectName }
+        const Subject = await client.db("UtemSystem").collection("Subjects").findOne({
+            "SubjectName": { $eq: req.body.SubjectName }
         });
 
         if (!Subject) {
@@ -276,7 +348,7 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req
         // Check if the student already submits attendance in the "Attendance" collection
         const existingAttendance = await client.db("UtemSystem").collection("Attendance").findOne({
             "student_id": { $eq: req.body.student_id },
-            "SubjectName": { $eq: req.body.SubjectName}
+            "SubjectName": { $eq: req.body.SubjectName }
         });
 
         if (existingAttendance) {
@@ -307,15 +379,27 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req
         res.status(500).send('Internal Server Error');
     }
 });
-
-// Lecturer ADD SUBJECT
-app.post('/Lecturer/AddSubject', verifyTokenAndRole, async (req, res) => {
-    const { student_id, SubjectName, lecturer_id } = req.body;
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// Lecturer ADD SUBJECT DONE/////////////////////////////////////////////////////////////////////////////
+app.post('/Lecturer/AddSubject', verifyTokenAndRole('Lecturer'), async (req, res) => {
+    const { student_id, SubjectName} = req.body;
+    const lecturer_id = req.user.lecturer_id;
     try {
+
+        // Check if the Subject exists in the "Subjects" collection
+        const Subjects = await client.db("UtemSystem").collection("Subjects").findOne({
+            "SubjectName": SubjectName
+        });
+
+        if (Subjects) {
+            res.status(400).send('Subject Already Exist');
+            console.log(SubjectName);
+            return;
+        }
+
         // Check if the Subject exists in the "Faculties" collection
         const SubjectInfo = await client.db("UtemSystem").collection("Faculties").findOne({
-            "SubjectName": SubjectName
+            "SubjectName": SubjectName,
         });
 
         if (!SubjectInfo) {
@@ -324,10 +408,21 @@ app.post('/Lecturer/AddSubject', verifyTokenAndRole, async (req, res) => {
             return;
         }
 
+        // Check if the Subject exists in the "Programs" collection
+        const SubInfo = await client.db("UtemSystem").collection("Programs").findOne({
+            "ProgramsName": ProgramsName,
+        });
+
+        if (!SubInfo) {
+            res.status(400).send('This Subject Not Enlisted By This Programs');
+            console.log(SubjectName);
+            return;
+        }
+
         // Check if the lecturer is assigned to the teaching subject in the "User" collection
         const TSubject = await client.db("UtemSystem").collection("User").findOne({
             "TeachingSubject": SubjectName,
-            "lecturer_id": lecturer_id
+            "lecturer_id": lecturer_id,
         });
 
         if (!TSubject) {
@@ -337,8 +432,9 @@ app.post('/Lecturer/AddSubject', verifyTokenAndRole, async (req, res) => {
         // Insert data into the "Subjects" collection
         await client.db("UtemSystem").collection("Subjects").insertOne({
             "facultyName": SubjectInfo.facultyName,
+            "ProgramsName": SubInfo.ProgramsName,
             "LecturerName": TSubject.name,
-            "SubjectName": SubjectInfo.SubjectName,
+            "SubjectName": SubjectName,
             student_id: student_id,
         });
 
@@ -348,15 +444,15 @@ app.post('/Lecturer/AddSubject', verifyTokenAndRole, async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-// Lecturer view Attendance NOT DONE
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Lecturer view Attendance DONE //////////////////////////////////////////////////////////////////
 app.post('/Lecturer/ViewRecordAttendance', verifyTokenAndRole('Lecturer'), async (req, res) => {
     const { subject } = req.body;
 
     try {
         // Check if the Subject exists in the "Attendance" collection
         const SubjectName = await client.db("UtemSystem").collection("Attendance").findOne({
-            "SubjectName": { $in: req.body.SubjectName }
+            "SubjectName": { $eq: req.body.SubjectName }
         });
 
         if (!SubjectName) {
@@ -376,63 +472,46 @@ app.post('/Lecturer/ViewRecordAttendance', verifyTokenAndRole('Lecturer'), async
     }
 
 });
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //NOT DONE
 app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req, res) => {
-    const { SubjectName } = req.body;
-    const lecturer_id = req.user.lecturer_id;
+    const { student_id, SubjectName} = req.body;
 
     try {
-        // Check if the lecturer exists
-        const lecturer = await client.db("UtemSystem").collection("User").findOne({
-            lecturer_id
+        // Check if the subject exists in the "Subjects" collection
+        const subject = await client.db("UtemSystem").collection("Subjects").findOne({
+            "SubjectName": SubjectName
         });
 
-        if (!lecturer) {
-            return res.status(403).json({ error: 'Invalid lecturer ID in the request' });
-        }
-
-        // Find subjects based on SubjectName
-        const subjects = await client.db("UtemSystem").collection("Faculties").find({
-            "SubjectName": { $in: SubjectName }
-        }).toArray();
-
-        if (!subjects || subjects.length === 0) {
-            res.status(400).send('No matching subjects found');
-            console.log(SubjectName);
+        if (!subject) {
+            res.status(400).send('Subject not found');
             return;
         }
 
-        const studentNames = [];
+        // Get the student list for the specific subject
+        const studentList = await client.db("UtemSystem").collection("Subjects").findOne({
+            "SubjectName": SubjectName,
+            "student_id": student_id
+        });
 
-        // Iterate over each subject and find the corresponding student names
-        for (const subject of subjects) {
-            const studentList = subject.studentList_id;
-
-            if (!studentList || !studentList.ids || studentList.ids.length === 0) {
-                res.status(400).send(`Student list not found for the subject: ${subject.SubjectName}`);
-                console.log(subject.SubjectName);
-                return;
-            }
-
-            // Extract student IDs from the studentList object
-            const studentIds = studentList.ids;
-
-            // Find names of students from the User collection based on student_id
-            const students = await client.db("UtemSystem").collection("User").find({
-                "student_id.ids": { $in: studentIds }
-            }).toArray();
-
-            if (students.length > 0) {
-                const studentNamesForSubject = students.map(student => student.name);
-                studentNames.push({ subject: subject.SubjectName, students: studentNamesForSubject });
-            } else {
-                res.status(400).send(`No matching students found for the subject: ${subject.SubjectName}`);
-                console.log(subject.SubjectName);
-                return;
-            }
+        if (!studentList) {
+            res.status(400).send('Student not found for the given subject');
+            return;
         }
 
-        res.send(studentNames);
+        // Now, retrieve the student name from the "User" collection
+        const user = await client.db("UtemSystem").collection("User").find({
+            "student_id": student_id
+        }).toArray();
+        console.log(user)
+
+        if (!user) {
+            res.status(400).send('Student not found in the User collection');
+            return;
+        }
+
+        const studentName = user.name; 
+        res.status(200).json({ student_id, studentName });
 
     } catch (error) {
         console.error(error);
@@ -441,7 +520,7 @@ app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req
 });
 
 
-
+//DONE NOT TESTED
 app.patch('/Lecturer/UpdateStudent', verifyTokenAndRole('Lecturer'), async (req, res) => {
     const { facultyName, studentList_id } = req.body;
 
@@ -472,7 +551,7 @@ app.patch('/Lecturer/UpdateStudent', verifyTokenAndRole('Lecturer'), async (req,
     }
 });
 
-
+//VIEW RECORD ATTENDANCE STUDENT //DONE////////////////////////////////////////////////////////////////////////////////
 app.post('/Homepage/ViewRecordAttendance', verifyTokenAndRole('Student'), async (req, res) => {
     const { student_id } = req.body;
 
@@ -494,7 +573,7 @@ app.post('/Homepage/ViewRecordAttendance', verifyTokenAndRole('Student'), async 
 
         const AttendList = await client.db("UtemSystem").collection("Attendance").find({
             "student_id": req.user.student_id,
-            "SubjectName": { $in: req.body.SubjectName }
+            "SubjectName": { $eq: req.body.SubjectName }
         }).toArray();
         res.send(AttendList);
 
@@ -504,7 +583,7 @@ app.post('/Homepage/ViewRecordAttendance', verifyTokenAndRole('Student'), async 
     }
 
 });
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/logout', (req, res) => {
     res.redirect('/')
 });

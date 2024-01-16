@@ -43,12 +43,9 @@ add faculty (Array) // admin
      ],
     "email": "fkekk@gmail.com",
     "phone": "033763123",
-    "session":[
-        "2021/2022"
-    ]
 }
 
-record attendance // student
+record attendance // student 
 {
     "student_id":"B0377895",
     "SubjectName":["Database"],
@@ -58,4 +55,18 @@ record attendance // student
 View Record Attendance // lecturer boleh buat guna method GET role teaching SUBJECT
 {
     "SubjectName":["Data-Structure"]
+}
+add subjects //lecturer
+{
+    "SubjectName":"Digital-System",
+    "student_id":[
+        "B0354231",
+        "B0377895"
+    ]
+}
+add ProgramsName
+{
+    "facultyName":"FKEK",
+    "ProgramsName":"BENG",
+    "SubjectName":["Data-Structure","Digital-System"]
 }
