@@ -192,29 +192,26 @@ app.post('/Admin/AddLecturer', verifyTokenAndRole('Admin'), (req, res) => {
 
 //ADD FACULTY
 app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) => {
-    const { facultyName, ProgramsName, SubjectListed, studentList_id, email, phone} = req.body;
+    const { facultyName, ProgramsName, SubjectName, studentList_id, email, phone} = req.body;
 
     try {
         // Check if the faculty already exists in the "Faculties" collection
         const facultyExists = await client.db("UtemSystem").collection("Faculties").findOne({
-            "facultyName": { $eq: req.body.facultyName },
-            "studentList_id": studentList_id
+            "facultyName": { $eq: req.body.facultyName }
         });
 
         if (facultyExists) {
             res.status(400).send('Faculty already exists');
             return;
         }
-        if (studentList_id) {
-            res.status(400).send('Student ID already exists');
-            return;
-        }
+
+        ///// checks student id list first
 
         // Insert faculty into the "Faculties" collection
         await client.db("UtemSystem").collection("Faculties").insertOne({
             "facultyName": facultyName,
             ProgramsName: ProgramsName,
-            SubjectListed: SubjectListed,
+            SubjectName: SubjectName,
             studentList_id: studentList_id,
             "email": email,
             "phone": phone,
@@ -265,15 +262,6 @@ app.post('/Admin/AddPrograms', verifyTokenAndRole('Admin'), async (req, res) => 
         }
 
         // Check if the Subject exists in the "Faculties" collection
-        const SubjectInfo = await client.db("UtemSystem").collection("Faculties").findOne({
-            "SubjectName": SubjectName,
-        });
-
-        if (!SubjectInfo) {
-            res.status(400).send('Subject Not Enlisted By This Faculty');
-            console.log(SubjectName);
-            return;
-        }
 
         // Insert data into the "Programs" collection
         await client.db("UtemSystem").collection("Programs").insertOne({
@@ -382,7 +370,7 @@ app.post('/Homepage/RecordAttendance', verifyTokenAndRole('Student'), async (req
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Lecturer ADD SUBJECT DONE/////////////////////////////////////////////////////////////////////////////
 app.post('/Lecturer/AddSubject', verifyTokenAndRole('Lecturer'), async (req, res) => {
-    const { student_id, SubjectName} = req.body;
+    const { student_id, SubjectName,ProgramsName} = req.body;
     const lecturer_id = req.user.lecturer_id;
     try {
 
