@@ -37,27 +37,28 @@ add faculty (Array) // admin
         "Data-Structure",
         "Digital-System"
     ],
-     "studentList_id": [
+     "student_id": [
         "B0354231",
         "B0377895"
      ],
     "email": "fkekk@gmail.com",
-    "phone": "033763123",
+    "phone": "033763123"
 }
 
 record attendance // student 
 {
+    "SubjectName":"Database",
     "student_id":"B0377895",
-    "SubjectName":["Database"],
     "attendance":"present"
 }
 
-View Record Attendance // lecturer boleh buat guna method GET role teaching SUBJECT
+View Record Attendance // Student
 {
-    "SubjectName":["Data-Structure"]
+    "SubjectName":"Data-Structure"
 }
 add subjects //lecturer
 {
+    "ProgramsName":"BENG",
     "SubjectName":"Digital-System",
     "student_id":[
         "B0354231",
