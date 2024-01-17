@@ -192,7 +192,7 @@ app.post('/Admin/AddLecturer', verifyTokenAndRole('Admin'), (req, res) => {
 
 //ADD FACULTY
 app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) => {
-    const { facultyName, ProgramsName, SubjectName, studentList_id, email, phone} = req.body;
+    const { facultyName, ProgramsName, SubjectName, student_id, email, phone} = req.body;
 
     try {
         // Check if the faculty already exists in the "Faculties" collection
@@ -212,7 +212,7 @@ app.post('/Admin/CreateFaculty', verifyTokenAndRole('Admin'), async (req, res) =
             "facultyName": facultyName,
             ProgramsName: ProgramsName,
             SubjectName: SubjectName,
-            studentList_id: studentList_id,
+            student_id: student_id,
             "email": email,
             "phone": phone,
         });
@@ -511,7 +511,7 @@ app.post('/Lecturer/ViewStudentlist', verifyTokenAndRole('Lecturer'), async (req
 
 //DONE NOT TESTED
 app.patch('/Lecturer/UpdateStudent', verifyTokenAndRole('Lecturer'), async (req, res) => {
-    const { facultyName, studentList_id } = req.body;
+    const { facultyName, student_id } = req.body;
 
     try {
         // Check if the Faculty exists in the "Faculties" collection
@@ -529,7 +529,7 @@ app.patch('/Lecturer/UpdateStudent', verifyTokenAndRole('Lecturer'), async (req,
 
         const updatedResult = await client.db("UtemSystem").collection("Attendance").updateMany(
             { "facultyName": facultyName },
-            { $set: { "studentList_id": [studentList_id] } }
+            { $set: { "student_id": [student_id] } }
         );
 
         res.send(updatedResult);
