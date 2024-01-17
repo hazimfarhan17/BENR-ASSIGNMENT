@@ -77,3 +77,8 @@ UPDATE STUDENT TO FACULTY // ADMIN
     "facultyName":"FKE",
     "student_id":"B0377895"
 }
+
+UPDATE STUDENT TO SUBJECT // LECTURER
+{
+    "student_id":"B0377895"
+}
