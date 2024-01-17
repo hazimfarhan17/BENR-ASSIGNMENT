@@ -153,7 +153,7 @@ app.post('/Admin/RegisterStudent', verifyTokenAndRole('Admin'), (req, res) => {
                 "phone": phone,
                 "PA": PA
             })
-            res.send('register seccessfully')
+            res.send('register successfully')
         }
     })
 });
@@ -185,7 +185,7 @@ app.post('/Admin/AddLecturer', verifyTokenAndRole('Admin'), (req, res) => {
                 "phone": phone,
                 "TeachingSubject": TeachingSubject
             })
-            res.send('register seccessfully')
+            res.send('register successfully')
         }
     })
 });
