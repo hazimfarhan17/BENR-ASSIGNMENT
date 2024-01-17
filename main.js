@@ -428,7 +428,40 @@ app.post('/Homepage/ViewRecordAttendance', verifyTokenAndRole('Student'), async 
         console.error(error);
         res.status(500).send('Internal Server Error');
     }
+});
 
+// LECTURER VIEW STUDENT DETAIL //DONE
+app.get('/Homepage/ViewtDetail', verifyTokenAndRole('Student'), async (req, res) => {
+    const student_id = req.user.student_id;
+
+    try {
+        // Check if the lecturer is assigned to the teaching subject in the "User" collection
+        const User = await client.db("UtemSystem").collection("User").findOne({
+            "student_id": student_id,
+        });
+
+        // Now, retrieve the student name from the "User" collection
+        const user = await client.db("UtemSystem").collection("User").find({
+            "student_id": { $eq: User.student_id }
+        }).project({
+            "name": 1,
+            "student_id": 1,
+            "email": 1,
+            "phone": 1,
+            "PA": 1,
+            "_id": 0 // Exclude the _id field
+        }).toArray();
+
+        if (!user || user.length === 0) {
+            res.status(400).send('Student not found in the User collection');
+            return;
+        }
+        res.send(user);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 // LECTURER ADD SUBJECT //DONE
