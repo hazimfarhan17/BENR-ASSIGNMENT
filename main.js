@@ -431,7 +431,7 @@ app.post('/Homepage/ViewRecordAttendance', verifyTokenAndRole('Student'), async 
 });
 
 // LECTURER VIEW STUDENT DETAIL //DONE
-app.get('/Homepage/ViewtDetail', verifyTokenAndRole('Student'), async (req, res) => {
+app.get('/Homepage/ViewDetail', verifyTokenAndRole('Student'), async (req, res) => {
     const student_id = req.user.student_id;
 
     try {
