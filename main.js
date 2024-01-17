@@ -359,16 +359,56 @@ app.patch('/Admin/UpdateStudentInFaculty', verifyTokenAndRole('Admin'), async (r
 });
 
 // ADMIN DELETE USER IF USER LEAVE FACULTY
-app.delete('/Admin/DeleteUser', verifyTokenAndRole('Admin'), (req, res) => {
-    client.db("UtemSystem").collection("User").find({
+app.delete('/Admin/DeleteStudent/:student_id', verifyTokenAndRole('Admin'), async (req, res) => {
+    const student_id = req.params.student_id;
 
-        role: { $eq: "Student" }
+    try {
+        // Check if the student ID exists in the "User" collection
+        const user = await client.db("UtemSystem").collection("User").findOne({
+            "student_id": student_id
+        });
 
-    }).toArray().then((result) => {
-        res.send(result)
-    })
+        if (!user) {
+            return res.status(400).send('Student Not Found');
+        }
+
+        // Check if the student ID exists in the "Faculties" collection
+        const student = await client.db("UtemSystem").collection("Faculties").findOne({
+            "student_id": student_id
+        });
+
+        if (!student) {
+            return res.status(400).send('Student Not Found');
+        }
+
+        // Delete the student from the "Faculties" collection
+        const deleteStudentFromFaculties = await client.db("UtemSystem").collection("Faculties").updateOne(
+            { facultyName: student.facultyName },
+            { $pull: { "student_id": student_id } }
+        );
+
+        // Remove the student from the "Subjects" collection
+        const removeFromSubjects = await client.db("UtemSystem").collection("Subjects").updateMany(
+            { "student_id": student_id },
+            { $pull: { "student_id": student_id } }
+        );
+
+        // Delete the user from the "User" collection
+        const deleteUser = await client.db("UtemSystem").collection("User").deleteOne({
+            "student_id": student_id
+        });
+
+        res.send("Student and related information deleted successfully");
+        console.log("Successfully deleted student and related information");
+        console.log(deleteStudentFromFaculties);
+        console.log(removeFromSubjects);
+        console.log(deleteUser);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
 });
-
 
 // VIEW STUDENT LIST : kena buat aggregate dan sort by faculty (hazim) // NOT DONE
 app.get('/Admin/ViewStudent', verifyTokenAndRole('Admin'), (req, res) => {
