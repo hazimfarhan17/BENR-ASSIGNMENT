@@ -313,6 +313,63 @@ app.post('/Admin/AddPrograms', verifyTokenAndRole('Admin'), async (req, res) => 
     }
 });
 
+//ADMIN UPDATE STUDENT IN FACULTY //DONE
+app.patch('/Admin/UpdateStudentInFaculty', verifyTokenAndRole('Admin'), async (req, res) => {
+    const { facultyName, student_id } = req.body;
+
+    try {
+        // Check if the student ID exists in the "User" collection
+        const User = await client.db("UtemSystem").collection("User").findOne({
+            "student_id": student_id
+        });
+
+        if (!User) {
+            return res.status(400).send('Student is not Exist');
+        }
+
+        // Check if the Faculty exists in the "Faculties" collection
+        const faculty = await client.db("UtemSystem").collection("Faculties").findOne({
+            "facultyName": { $eq: facultyName }
+        });
+        if (!faculty) {
+            return res.status(400).send('Faculty not Exist');
+        }
+
+        // Check if the ID exists in the "Faculties" collection
+        const ID = await client.db("UtemSystem").collection("Faculties").findOne({
+            "facultyName": faculty.facultyName,
+            "student_id": User.student_id
+        });
+        if (ID) {
+            return res.status(400).send('ID Already Exist in this faculty');
+        }
+
+        const updateFaculty = await client.db("UtemSystem").collection("Faculties").updateOne(
+            { "facultyName": facultyName },
+            { $push: { "student_id": student_id } }
+        );
+
+        res.send("Student Added to Faculty");
+        console.log("Successfully added student to faculty");
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// ADMIN DELETE USER IF USER LEAVE FACULTY
+app.delete('/Admin/DeleteUser', verifyTokenAndRole('Admin'), (req, res) => {
+    client.db("UtemSystem").collection("User").find({
+
+        role: { $eq: "Student" }
+
+    }).toArray().then((result) => {
+        res.send(result)
+    })
+});
+
+
 // VIEW STUDENT LIST : kena buat aggregate dan sort by faculty (hazim) // NOT DONE
 app.get('/Admin/ViewStudent', verifyTokenAndRole('Admin'), (req, res) => {
     client.db("UtemSystem").collection("User").find({
@@ -641,52 +698,6 @@ app.get('/Lecturer/ViewStudentDetail', verifyTokenAndRole('Lecturer'), async (re
         res.status(500).send('Internal Server Error');
     }
 });
-
-//ADMIN UPDATE STUDENT IN FACULTY //DONE
-app.patch('/Admin/UpdateStudentInFaculty', verifyTokenAndRole('Admin'), async (req, res) => {
-    const { facultyName, student_id } = req.body;
-
-    try {
-        // Check if the student ID exists in the "User" collection
-        const User = await client.db("UtemSystem").collection("User").findOne({
-            "student_id": student_id
-        });
-
-        if (!User) {
-            return res.status(400).send('Student is not Exist');
-        }
-
-        // Check if the Faculty exists in the "Faculties" collection
-        const faculty = await client.db("UtemSystem").collection("Faculties").findOne({
-            "facultyName": { $eq: facultyName }
-        });
-        if (!faculty) {
-            return res.status(400).send('Faculty not Exist');
-        }
-
-        // Check if the ID exists in the "Faculties" collection
-        const ID = await client.db("UtemSystem").collection("Faculties").findOne({
-            "facultyName": faculty.facultyName,
-            "student_id": User.student_id
-        });
-        if (ID) {
-            return res.status(400).send('ID Already Exist in this faculty');
-        }
-
-        const updateFaculty = await client.db("UtemSystem").collection("Faculties").updateOne(
-            { "facultyName": facultyName },
-            { $push: { "student_id": student_id } }
-        );
-
-        res.send("Student Added to Faculty");
-        console.log("Successfully added student to faculty");
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
 
 app.get('/logout', (req, res) => {
     res.redirect('/')
