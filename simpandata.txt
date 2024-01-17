@@ -1,7 +1,6 @@
-
 for postman
 
-add student // admin
+ADD STUDENT // ADMIN
 {
     "username": username,
     "password": hash,
@@ -13,7 +12,7 @@ add student // admin
     "PA": PA 
 }
 
-add lecturer //admin
+ADD LECTURER // ADMIN
 {
     "username": nawwar00,
     "password": hash,
@@ -25,7 +24,7 @@ add lecturer //admin
     "TeachingSubject": Data-Structure
 }
 
-add faculty (Array) // admin
+ADD FACULTY // ADMIN
 {
     "facultyName": "FKE",
     "ProgramsName": [
@@ -45,18 +44,18 @@ add faculty (Array) // admin
     "phone": "033763123"
 }
 
-record attendance // student 
+RECORD ATTENDANCE // STUDENT
 {
     "SubjectName":"Database",
     "student_id":"B0377895",
     "attendance":"present"
 }
 
-View Record Attendance // Student
+VIEW RECORD ATTENDANCE // STUDENT
 {
     "SubjectName":"Data-Structure"
 }
-add subjects //lecturer
+ADD SUBJECT // LECTURER
 {
     "ProgramsName":"BENG",
     "SubjectName":"Digital-System",
@@ -65,9 +64,16 @@ add subjects //lecturer
         "B0377895"
     ]
 }
-add ProgramsName
+
+ADD PROGRAMS // ADMIN
 {
     "facultyName":"FKEK",
     "ProgramsName":"BENG",
     "SubjectName":["Data-Structure","Digital-System"]
+}
+
+UPDATE STUDENT TO FACULTY // ADMIN
+{
+    "facultyName":"FKE",
+    "student_id":"B0377895"
 }
