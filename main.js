@@ -692,8 +692,13 @@ app.get('/Lecturer/ViewRecordAttendance', verifyTokenAndRole('Lecturer'), async 
             "SubjectName": TSubject.TeachingSubject,
         }).toArray();
         res.send(AttendList);
-
-    } catch (error) {
+        
+        if (!AttendList) {
+            res.status(400).send('No Attendance Record Found');
+            return;
+        }
+    } 
+    catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
     }
