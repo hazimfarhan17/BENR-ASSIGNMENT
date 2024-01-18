@@ -532,7 +532,7 @@ app.get('/Homepage/ViewDetail', verifyTokenAndRole('Student'), async (req, res) 
     const student_id = req.user.student_id;
 
     try {
-        // Check if the lecturer is assigned to the teaching subject in the "User" collection
+        // Check if the student is exist or not in "User" collection
         const User = await client.db("UtemSystem").collection("User").findOne({
             "student_id": student_id,
         });
