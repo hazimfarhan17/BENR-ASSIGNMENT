@@ -1,0 +1,665 @@
+{
+	"info": {
+		"_postman_id": "2e2d519c-1f7a-411e-8355-17851ba917bc",
+		"name": "Database,GroupC",
+		"description": "Step by Step to Add Data  \n1: Add User to \"User\" Collection // Include Student and Lecturer  \n2: Add Faculty with all the Information  \n3 Add Programs after all the subjet already enlisted  \n4: Add Subject to Enlisted for student who taken the Subject  \n5: Then can update any student to \"Subject\" collection or \"Faculties\" collection  \n6: Or delete any unwanted User if user is dismiss from faculty  \n7: Done",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30728687"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "AdminLogin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "//login admin\r\n{\r\n    \"username\":\"admin\",\r\n    \"password\":\"admin123\"\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/login",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin/RegisterStudent",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"hazim01\",\r\n    \"password\": \"abc123\",\r\n    \"student_id\": \"B022210107\",\r\n    \"name\": \"Hazim Farhan\",\r\n    \"email\": \"hazimfarhan01@example.com\",\r\n    \"role\": \"Student\",\r\n    \"phone\": \"0193996130\",\r\n    \"PA\": \"Dr ...\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/lAdmin/RegisterStudent",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"lAdmin",
+								"RegisterStudent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin/AddLecturer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"nawwar00\",\r\n    \"password\": \"nawwar091\",\r\n    \"student_id\": \"L015\",\r\n    \"name\": \"Nawwar Nurnaim\",\r\n    \"email\":\"nawwar00@example.com\",\r\n    \"role\": \"Lecturer\",\r\n    \"phone\": \"016-9577908\",\r\n    \"TeachingSubject\": \"Korean Language\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/lAdmin/AddLecturer",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"lAdmin",
+								"AddLecturer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin/CreateFaculty",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"facultyName\": \"FKEK\",\r\n    \"ProgramsName\": [\r\n        \"BENR\",\r\n        \"BENG\"\r\n\r\n    ],\r\n    \"SubjectName\": [\r\n        \"Data-Structure\",\r\n        \"Digital-System\"\r\n    ],\r\n     \"student_id\": [\r\n        \"B0354231\",\r\n        \"B0377895\"\r\n     ],\r\n    \"email\": \"fkekk@gmail.com\",\r\n    \"phone\": \"033763123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/lAdmin/CreateFaculty",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"lAdmin",
+								"CreateFaculty"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin/AddPrograms",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ProgramsName\": \"BENR\",\r\n    \"SubjectName\":[\r\n        \"COMPUTER-ORGANIZATION AND ARCHITECTURE\",\r\n        \"INFORMATION SECURITY\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/lAdmin/CreateFaculty",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"lAdmin",
+								"CreateFaculty"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin/UpdateStudentInFaculty",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"facultyName\":\"FKEKK\",\r\n    \"student_id\":\"B0377895\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/Admin/UpdateStudentInFaculty",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"Admin",
+								"UpdateStudentInFaculty"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin/ViewStudent",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/Admin/ViewStudent",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"Admin",
+								"ViewStudent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin/DeleteStudent/:student_id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/Admin/DeleteStudent/:student_id",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"Admin",
+								"DeleteStudent",
+								":student_id"
+							],
+							"variable": [
+								{
+									"key": "student_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "# This is the API for Admin Use ONLY"
+		},
+		{
+			"name": "Lecturer",
+			"item": [
+				{
+					"name": "LecturerLogin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "//Lecturer login\r\n{\r\n    \"username\":\"abdrahim\",\r\n    \"password\":\"pass1\"\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/login",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lecturer/AddSubject",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ProgramsName\":\"BENG\",\r\n    \"SubjectName\":\"Digital-System\",\r\n    \"student_id\":[\r\n        \"B0354231\",\r\n        \"B0377895\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/Lecturer/AddSubject",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"Lecturer",
+								"AddSubject"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lecturer/UpdateStudentInSubject",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"student_id\":\"B0377895\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/Lecturer/UpdateStudentInSubject",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"Lecturer",
+								"UpdateStudentInSubject"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lecturer/ViewRecordAttendance",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiTGVjdHVyZXIiLCJsZWN0dXJlcl9pZCI6IkwwMDQiLCJpYXQiOjE3MDU1NzgzNjQsImV4cCI6MTcwNTU4MTk2NH0.wbvcjGth1GaQfalK_ttuhVSoNEAkdvpuoKtZjtD4aiA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/Lecturer/ViewRecordAttendance",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"Lecturer",
+								"ViewRecordAttendance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lecturer/ViewStudentDetail",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/Lecturer/ViewStudentDetail",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"Lecturer",
+								"ViewStudentDetail"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "# This is the API for Lecturer Use ONLY"
+		},
+		{
+			"name": "Student",
+			"item": [
+				{
+					"name": "StudentLogin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "//Student login\r\n{\r\n    \"username\":\"user4\",\r\n    \"password\":\"pass4\"\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/login",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Homepage/RecordAttendance(Student)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"SubjectName\":\"Database\", // Find Certain Subject\r\n    \"student_id\":\"B0377895\", // Insert Student ID to take Attendance\r\n    \"attendance\":\"present\" // Insert Present or Absent\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/Homepage/RecordAttendance",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"Homepage",
+								"RecordAttendance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Homepage/ViewRecordAttendance(Student)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"SubjectName\":\"MICROPROCESSOR\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/Homepage/ViewRecordAttendance",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"Homepage",
+								"ViewRecordAttendance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Homepage/ViewDetail(Student)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://systemutem.azurewebsites.net/Homepage/ViewDetail",
+							"protocol": "https",
+							"host": [
+								"systemutem",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"Homepage",
+								"ViewDetail"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "# This is the API for Student Use ONLY"
+		}
+	]
+}
